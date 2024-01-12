@@ -1,0 +1,13 @@
+{
+  "itemgroup.commandsupport" : "Command Support",
+
+  "item.commandsupport.support_flare" : "Support Designator Flare",
+  "item.commandsupport.airstrike_flare" : "Airstrike Designator Flare",
+  "item.commandsupport.nuke_flare" : "Nuclear Designator Flare",
+  "item.commandsupport.radio" : "Radio",
+
+  "sound.commandsupport.radio" : "Radio activates",
+  "sound.commandsupport.flyby" : "Plane flys by",
+  "sound.commandsupport.alarm" : "Alarm sounds",
+  "sound.commandsupport.flare" : "Flare deploys"
+}

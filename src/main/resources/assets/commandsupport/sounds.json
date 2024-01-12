@@ -1,0 +1,26 @@
+{
+  "alarm": {
+    "subtitles": "sounds.commandsupport.alarm",
+    "sounds": [
+      "commandsupport:alarm"
+    ]
+  },
+  "flare": {
+    "subtitle": "sounds.commandsupport.flare",
+    "sounds": [
+      "commandsupport:flare"
+    ]
+  },
+  "radio": {
+    "subtitle": "sounds.commandsupport.radio",
+    "sounds": [
+      "commandsupport:radio"
+    ]
+  },
+  "flyby": {
+    "subtitle": "sounds.commandsupport.flyby",
+    "sounds": [
+      "commandsupport:flyby"
+    ]
+  }
+}
