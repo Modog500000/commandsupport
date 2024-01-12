@@ -66,7 +66,7 @@
         },
         {
           "type": "minecraft:item",
-          "weight": 40,
+          "weight": 10,
           "name": "commandsupport:support_flare"
         },
         {

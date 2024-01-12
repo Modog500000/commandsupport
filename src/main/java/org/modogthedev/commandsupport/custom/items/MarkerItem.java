@@ -23,13 +23,16 @@ public class MarkerItem  extends Item {
     }
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        MarkerHandeler.addMarker(player.position(),level, type, player);
         ItemStack item = player.getItemInHand(hand);
-        level.playSound(null,player.getX(),player.getY(),player.getZ(), ModSounds.FLARE.get(), SoundSource.PLAYERS, 0.5f ,1);
-        player.awardStat(Stats.ITEM_USED.get(this));
-        player.getCooldowns().addCooldown(item.getItem(),20);
-        item.shrink(1);
-        return InteractionResultHolder.consume(item);
+        if (!level.isClientSide) {
+            MarkerHandeler.addMarker(player.position(), level, type, player);
+            level.playSound(null, player.getX(), player.getY(), player.getZ(), ModSounds.FLARE.get(), SoundSource.PLAYERS, 0.5f, 1);
+            player.awardStat(Stats.ITEM_USED.get(this));
+            player.getCooldowns().addCooldown(item.getItem(), 20);
+            item.shrink(1);
+            return InteractionResultHolder.consume(item);
+        }
+        return InteractionResultHolder.success(item);
     }
     public enum TYPE {
         SUPPLY,

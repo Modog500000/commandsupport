@@ -1,11 +1,13 @@
 package org.modogthedev.commandsupport.markers;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.Entity;
@@ -14,18 +16,15 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.LootTables;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
@@ -73,7 +72,16 @@ public class MarkerHandeler {
             } else {
                 marker.delay++;
             }
+            if (marker.lifespan == 0 && marker.delay == 200 && !marker.hasParticle) {
+                displayPlaneParticle(marker, ModParticles.PLANE_PARTICLE.get());
+                marker.hasParticle = true;
+                if (marker.type == MarkerItem.TYPE.NUKE) {
+                    marker.level.playSound(null,marker.pos.x,marker.pos.y,marker.pos.z, ModSounds.ALARM.get(), SoundSource.PLAYERS, 25f ,1);
+                }
+            }
+
         }
+
     }
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
@@ -83,10 +91,11 @@ public class MarkerHandeler {
         }
         for (SupportMarker marker: inboundSupport) {
             if (marker.lifespan == 0 && marker.delay == 200) {
-                displayPlaneParticle(marker, ModParticles.PLANE_PARTICLE.get());
-            }
-            if (marker.lifespan == 0 && marker.delay == 200) {
 
+            }
+            if (marker.lifespan == 70) {
+                SoundInstance soundInstance = SimpleSoundInstance.forLocalAmbience(ModSounds.FLYBY.get(),10,1);
+                Minecraft.getInstance().getSoundManager().play(soundInstance);
             }
         }
     }
@@ -101,10 +110,23 @@ public class MarkerHandeler {
     @OnlyIn(Dist.CLIENT)
     
     public static void displayPlaneParticle(SupportMarker marker, ParticleOptions particleOptions) {
-        Minecraft.getInstance().level.addParticle(particleOptions, marker.pos.x,marker.pos.y,marker.pos.z, 0, 0, 0);
+        ServerLevel level = (ServerLevel) marker.level;
+        for(ServerPlayer serverplayer : level.players()) {
+            level.sendParticles(serverplayer, particleOptions, true, marker.pos.x, marker.pos.y, marker.pos.z, 1, 0, 0, 0, 0);
+        }
+
     }
-    public static void supportDeployEvent(Level level, Vec3 pos, MarkerItem.TYPE type, Entity owner) {
+    public static Vec3 getPosForDeploy(Vec3 pos, Level level) {
+        BlockHitResult blockHitResult = level.clip(new ClipContext(new Vec3(pos.x,400,pos.z), pos, ClipContext.Block.COLLIDER, net.minecraft.world.level.ClipContext.Fluid.WATER, null));
+        if (blockHitResult.getType() == HitResult.Type.MISS) {
+            return pos;
+        } else {
+            return blockHitResult.getLocation().add(0,1,0);
+        }
+    }
+    public static void supportDeployEvent(Level level, Vec3 prepos, MarkerItem.TYPE type, Entity owner) {
         if (!level.isClientSide) {
+            Vec3 pos = getPosForDeploy(prepos, level);
             switch (type) {
                 case SUPPLY -> {
                     LootTable table = Objects.requireNonNull(owner.getServer()).getLootTables().get((new ResourceLocation("commandsupport:crate")));
@@ -128,13 +150,13 @@ public class MarkerHandeler {
                     level.explode(owner, pos.x, pos.y - 12, pos.z, 6.0f,Explosion.BlockInteraction.BREAK);
                 }
                 case NUKE -> {
-                    level.explode(owner, pos.x, pos.y, pos.z, 40.0f, Explosion.BlockInteraction.BREAK);
-                    level.explode(owner, pos.x+10, pos.y, pos.z, 10.0f, Explosion.BlockInteraction.BREAK);
-                    level.explode(owner, pos.x-10, pos.y, pos.z, 10.0f, Explosion.BlockInteraction.BREAK);
-                    level.explode(owner, pos.x+10, pos.y, pos.z+10, 10.0f, Explosion.BlockInteraction.BREAK);
-                    level.explode(owner, pos.x-10, pos.y, pos.z-10, 10.0f, Explosion.BlockInteraction.BREAK);
-                    level.explode(owner, pos.x, pos.y, pos.z+10, 10.0f, Explosion.BlockInteraction.BREAK);
-                    level.explode(owner, pos.x, pos.y, pos.z-10, 10.0f, Explosion.BlockInteraction.BREAK);
+                    level.explode(owner, pos.x, pos.y, pos.z, 100f, Explosion.BlockInteraction.BREAK);
+                    level.explode(owner, pos.x+20, pos.y, pos.z, 40.0f, Explosion.BlockInteraction.BREAK);
+                    level.explode(owner, pos.x-20, pos.y, pos.z, 40.0f, Explosion.BlockInteraction.BREAK);
+                    level.explode(owner, pos.x+20, pos.y, pos.z+20, 40.0f, Explosion.BlockInteraction.BREAK);
+                    level.explode(owner, pos.x-20, pos.y, pos.z-20, 40.0f, Explosion.BlockInteraction.BREAK);
+                    level.explode(owner, pos.x, pos.y, pos.z+20, 40.0f, Explosion.BlockInteraction.BREAK);
+                    level.explode(owner, pos.x, pos.y, pos.z-20, 40.0f, Explosion.BlockInteraction.BREAK);
                 }
             }
         }
@@ -143,11 +165,9 @@ public class MarkerHandeler {
         for (MarkerMarker marker: markers) {
             if (marker.level == level) {
                 if (marker.pos.distanceTo(pos) <= radius && !marker.supportCalled) {
-                    if (marker.type == MarkerItem.TYPE.NUKE) {
-                        level.playSound(null,marker.pos.x,marker.pos.y,marker.pos.z, ModSounds.ALARM.get(), SoundSource.PLAYERS, 25f ,1);
-                    }
-                    inboundSupport.add(new SupportMarker(marker.pos,level, marker, marker.type, marker.owner));
+
                     marker.supportCalled = true;
+                    inboundSupport.add(new SupportMarker(marker.pos,level, marker, marker.type, marker.owner));
                     return true;
                 }
             }

@@ -43,11 +43,8 @@ public class PlaneParticle extends TextureSheetParticle {
     @Override
     public void tick() {
         super.tick();
-        if (this.age == 10) {
-            SoundInstance soundInstance = SimpleSoundInstance.forLocalAmbience(ModSounds.FLYBY.get(),1,1);
-            Minecraft.getInstance().getSoundManager().play(soundInstance);
-        }
     }
+
 
     public Quaternion getCustomRotation(Camera camera, float partialTicks, boolean vert) {
         if (vert) {
@@ -113,7 +110,7 @@ public class PlaneParticle extends TextureSheetParticle {
                                        double dx, double dy, double dz) {
             PlaneParticle planeParticle = new PlaneParticle(level, x-300, 300, z-300, this.sprites, dx+5, dy, dz+5);
             planeParticle.pickSprite(sprites);
-            planeParticle.quadSize = (float) (Math.random()*4)+3;
+            planeParticle.quadSize = 15f;
             return planeParticle;
         }
     }

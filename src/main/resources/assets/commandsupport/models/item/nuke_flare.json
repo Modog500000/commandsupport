@@ -1,7 +1,7 @@
 {
   "parent": "commandsupport:item/flare",
   "textures": {
-    "0": "commandsupport:item/flare",
-    "particle": "commandsupport:item/flare"
+    "0": "commandsupport:item/flare_nuclear",
+    "particle": "commandsupport:item/flare_nuclear"
   }
 }

@@ -13,6 +13,7 @@ public class SupportMarker {
     public MarkerItem.TYPE type;
     public Entity owner;
     public boolean hasDeployed = false;
+    public boolean hasParticle = false;
     public int delay = 0;
 
     public SupportMarker(Vec3 pos, Level level, MarkerMarker marker, MarkerItem.TYPE type, Entity owner) {

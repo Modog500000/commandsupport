@@ -69,7 +69,7 @@ public class MarkerParticle extends TextureSheetParticle {
                                        double dx, double dy, double dz) {
             MarkerParticle markerParticle = new MarkerParticle(level, x, y, z, this.sprites, dx, dy, dz);
             markerParticle.pickSprite(sprites);
-            markerParticle.quadSize = (float) (Math.random()*.1)+2;
+            markerParticle.quadSize = (float) (Math.random()*.1)+1;
             return markerParticle;
         }
     }
