@@ -21,7 +21,7 @@ import org.modogthedev.commandsupport.core.ModSounds;
 import org.modogthedev.commandsupport.util.IRotatingParticleRenderType;
 
 public class PlaneParticle extends TextureSheetParticle {
-    private final boolean mirror = true;
+    private final boolean mirror = false;
     protected PlaneParticle(ClientLevel level, double xCoord, double yCoord, double zCoord,
                             SpriteSet spriteSet, double xd, double yd, double zd) {
         super(level, xCoord, yCoord, zCoord, xd, yd, zd);
@@ -73,8 +73,8 @@ public class PlaneParticle extends TextureSheetParticle {
         };
         float scale = getQuadSize(partialTicks);
 
-        Quaternion rotation = getCustomRotation(camera, partialTicks,false);
-        Quaternion rotation1 = getCustomRotation(camera, partialTicks,true);
+        Quaternion rotation = getCustomRotation(camera, partialTicks,true);
+        Quaternion rotation1 = getCustomRotation(camera, partialTicks,false);
         for(int i = 0; i < 4; ++i) {
             Vector3f vertex = vertices[i];
             vertex.transform(rotation);
