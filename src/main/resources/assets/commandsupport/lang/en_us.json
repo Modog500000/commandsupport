@@ -6,8 +6,8 @@
   "item.commandsupport.nuke_flare" : "Nuclear Designator Flare",
   "item.commandsupport.radio" : "Radio",
 
-  "sound.commandsupport.radio" : "Radio activates",
-  "sound.commandsupport.flyby" : "Plane flys by",
-  "sound.commandsupport.alarm" : "Alarm sounds",
-  "sound.commandsupport.flare" : "Flare deploys"
+  "sounds.commandsupport.radio" : "Radio activates",
+  "sounds.commandsupport.flyby" : "Plane flys by",
+  "sounds.commandsupport.alarm" : "Alarm sounds",
+  "sounds.commandsupport.flare" : "Flare deploys"
 }

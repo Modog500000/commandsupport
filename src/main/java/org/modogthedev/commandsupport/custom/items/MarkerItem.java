@@ -28,7 +28,8 @@ public class MarkerItem  extends Item {
         level.playSound(null,player.getX(),player.getY(),player.getZ(), ModSounds.FLARE.get(), SoundSource.PLAYERS, 0.5f ,1);
         player.awardStat(Stats.ITEM_USED.get(this));
         player.getCooldowns().addCooldown(item.getItem(),20);
-        return super.use(level, player, hand);
+        item.shrink(1);
+        return InteractionResultHolder.consume(item);
     }
     public enum TYPE {
         SUPPLY,

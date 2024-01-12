@@ -117,7 +117,6 @@ public class MarkerHandeler {
                         table.fill((Container) level.getBlockEntity(blockPos), builder.create(LootContextParamSets.CHEST));
                     }
                     level.sendBlockUpdated(blockPos,level.getBlockState(blockPos),level.getBlockState(blockPos), Block.UPDATE_ALL);
-                    Commandsupport.LOGGER.info("Place!");
                 }
                 case AIRSTRIKE -> {
                     level.explode(owner, pos.x, pos.y, pos.z, 10.0f, Explosion.BlockInteraction.BREAK);
