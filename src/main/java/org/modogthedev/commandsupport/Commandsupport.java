@@ -24,6 +24,7 @@ import org.modogthedev.commandsupport.core.ModItems;
 import org.modogthedev.commandsupport.core.ModParticles;
 import org.modogthedev.commandsupport.core.ModSounds;
 import org.modogthedev.commandsupport.markers.MarkerHandeler;
+import org.modogthedev.commandsupport.networking.Messages;
 import org.slf4j.Logger;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -35,12 +36,14 @@ public class Commandsupport {
     // Directly reference a slf4j logger
     public static final Logger LOGGER = LogUtils.getLogger();
 
+
     public Commandsupport() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         ModParticles.PARTICLE_TYPES.register(modEventBus);
         ModItems.ITEMS.register(modEventBus);
         ModSounds.SOUND_EVENTS.register(modEventBus);
+        Messages.register();
 
 
 
@@ -49,7 +52,7 @@ public class Commandsupport {
 
         IEventBus bus = MinecraftForge.EVENT_BUS;
         bus.addListener(MarkerHandeler::tick);
-        bus.addListener(MarkerHandeler::clientTick);
+        bus.addListener(MarkerHandeler::tickLevel);
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
@@ -63,6 +66,8 @@ public class Commandsupport {
 
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
+            IEventBus bus = MinecraftForge.EVENT_BUS;
+            bus.addListener(MarkerHandeler::clientTick);
         }
     }
 }
