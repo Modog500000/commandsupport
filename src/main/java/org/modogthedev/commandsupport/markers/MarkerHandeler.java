@@ -161,8 +161,7 @@ public class MarkerHandeler {
 
             }
             if (marker.lifespan == 70) {
-                SoundInstance soundInstance = SimpleSoundInstance.forLocalAmbience(ModSounds.FLYBY.get(), 10, 1);
-                Minecraft.getInstance().getSoundManager().play(soundInstance);
+
             }
         }
     }

@@ -17,6 +17,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
+import org.modogthedev.commandsupport.Commandsupport;
 import org.modogthedev.commandsupport.core.ModSounds;
 import org.modogthedev.commandsupport.util.IRotatingParticleRenderType;
 
@@ -43,6 +44,10 @@ public class PlaneParticle extends TextureSheetParticle {
     @Override
     public void tick() {
         super.tick();
+        if (age == 70) {
+            SoundInstance soundInstance = SimpleSoundInstance.forLocalAmbience(ModSounds.FLYBY.get(), 10, 1);
+            Minecraft.getInstance().getSoundManager().play(soundInstance);
+        }
     }
 
 
@@ -108,7 +113,23 @@ public class PlaneParticle extends TextureSheetParticle {
         public Particle createParticle(@NotNull SimpleParticleType particleType, @NotNull ClientLevel level,
                                        double x, double y, double z,
                                        double dx, double dy, double dz) {
-            PlaneParticle planeParticle = new PlaneParticle(level, x-300, 300, z-300, this.sprites, dx+5, dy, dz+5);
+            Vec3 playPos = Minecraft.getInstance().player.position();
+            Vec3 lastPos = new Vec3(x-150,y,z-150);
+            Vec3 vel = new Vec3(dx+5,dy,dz+5);
+            Vec3 closestPoint = new Vec3(x,y,z);
+            double lastDist = 300;
+            int i = 200;
+            while (i > 0) {
+                if (lastPos.add(vel).distanceTo(playPos) > lastDist) {
+                    closestPoint = lastPos;
+                    i = 0;
+                }
+                lastDist = lastPos.add(vel).distanceTo(playPos);
+                lastPos = lastPos.add(vel);
+                i--;
+            }
+            Commandsupport.LOGGER.info(String.valueOf(closestPoint));
+            PlaneParticle planeParticle = new PlaneParticle(level, closestPoint.x-300, 300, closestPoint.z-300, this.sprites, dx+5, dy, dz+5);
             planeParticle.pickSprite(sprites);
             planeParticle.quadSize = 15f;
             return planeParticle;
