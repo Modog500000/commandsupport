@@ -60,7 +60,7 @@ public class MarkerMarker {
     public MarkerMarker(CompoundTag tag) {
         readAdditionalSaveData(tag);
         if (Minecraft.getInstance() != null) {
-            this.level = Minecraft.getInstance().player.level;
+            this.level = Minecraft.getInstance().player.level();
         } else {
             this.level = null;
         }

@@ -21,7 +21,10 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
@@ -197,34 +200,32 @@ public class MarkerHandeler {
             Vec3 pos = getPosForDeploy(prepos, level);
             switch (type) {
                 case SUPPLY -> {
-                    LootTable table = Objects.requireNonNull(owner.getServer()).getLootTables().get((new ResourceLocation("commandsupport:crate")));
+                    LootTable table = Objects.requireNonNull(owner.getServer()).getLootData().getLootTable(((new ResourceLocation("commandsupport:crate"))));
                     BlockState chest = Blocks.CHEST.defaultBlockState();
                     BlockPos blockPos = new BlockPos((int) pos.x, (int) pos.y, (int) pos.z);
                     level.setBlock(blockPos, chest, 0);
-                    LootContext.Builder builder = (new LootContext.Builder((ServerLevel) level))
-                            .withParameter(LootContextParams.ORIGIN, pos);
                     if (level.getBlockEntity(blockPos) instanceof ChestBlockEntity) {
-                        table.fill((Container) level.getBlockEntity(blockPos), builder.create(LootContextParamSets.CHEST));
+                        table.fill((Container) level.getBlockEntity(blockPos), new LootParams.Builder((ServerLevel) level).create(new LootContextParamSet.Builder().optional(new LootContextParam<>(new ResourceLocation("commandsupport:crate"))).build()), (long) (Math.random()*1000));
                     }
                     level.sendBlockUpdated(blockPos, level.getBlockState(blockPos), level.getBlockState(blockPos), Block.UPDATE_ALL);
                 }
                 case AIRSTRIKE -> {
-                    level.explode(owner, pos.x, pos.y, pos.z, 10.0f, Explosion.BlockInteraction.BREAK);
-                    level.explode(owner, pos.x, pos.y - 2, pos.z, 8.0f, Explosion.BlockInteraction.BREAK);
-                    level.explode(owner, pos.x, pos.y - 4, pos.z, 8.0f, Explosion.BlockInteraction.BREAK);
-                    level.explode(owner, pos.x, pos.y - 6, pos.z, 8.0f, Explosion.BlockInteraction.BREAK);
-                    level.explode(owner, pos.x, pos.y - 8, pos.z, 6.0f, Explosion.BlockInteraction.BREAK);
-                    level.explode(owner, pos.x, pos.y - 10, pos.z, 6.0f, Explosion.BlockInteraction.BREAK);
-                    level.explode(owner, pos.x, pos.y - 12, pos.z, 6.0f, Explosion.BlockInteraction.BREAK);
+                    level.explode(owner, pos.x, pos.y, pos.z, 10.0f, Level.ExplosionInteraction.TNT);
+                    level.explode(owner, pos.x, pos.y - 2, pos.z, 8.0f, Level.ExplosionInteraction.TNT);
+                    level.explode(owner, pos.x, pos.y - 4, pos.z, 8.0f, Level.ExplosionInteraction.TNT);
+                    level.explode(owner, pos.x, pos.y - 6, pos.z, 8.0f, Level.ExplosionInteraction.TNT);
+                    level.explode(owner, pos.x, pos.y - 8, pos.z, 6.0f, Level.ExplosionInteraction.TNT);
+                    level.explode(owner, pos.x, pos.y - 10, pos.z, 6.0f, Level.ExplosionInteraction.TNT);
+                    level.explode(owner, pos.x, pos.y - 12, pos.z, 6.0f, Level.ExplosionInteraction.TNT);
                 }
                 case NUKE -> {
-                    level.explode(owner, pos.x, pos.y, pos.z, 120f, Explosion.BlockInteraction.BREAK);
-                    level.explode(owner, pos.x + 20, pos.y, pos.z, 60.0f, Explosion.BlockInteraction.BREAK);
-                    level.explode(owner, pos.x - 20, pos.y, pos.z, 60.0f, Explosion.BlockInteraction.BREAK);
-                    level.explode(owner, pos.x + 20, pos.y, pos.z + 20, 60.0f, Explosion.BlockInteraction.BREAK);
-                    level.explode(owner, pos.x - 20, pos.y, pos.z - 20, 60.0f, Explosion.BlockInteraction.BREAK);
-                    level.explode(owner, pos.x, pos.y, pos.z + 20, 60.0f, Explosion.BlockInteraction.BREAK);
-                    level.explode(owner, pos.x, pos.y, pos.z - 20, 60.0f, Explosion.BlockInteraction.BREAK);
+                    level.explode(owner, pos.x, pos.y, pos.z, 120f, Level.ExplosionInteraction.TNT);
+                    level.explode(owner, pos.x + 20, pos.y, pos.z, 60.0f, Level.ExplosionInteraction.TNT);
+                    level.explode(owner, pos.x - 20, pos.y, pos.z, 60.0f, Level.ExplosionInteraction.TNT);
+                    level.explode(owner, pos.x + 20, pos.y, pos.z + 20, 60.0f, Level.ExplosionInteraction.TNT);
+                    level.explode(owner, pos.x - 20, pos.y, pos.z - 20, 60.0f, Level.ExplosionInteraction.TNT);
+                    level.explode(owner, pos.x, pos.y, pos.z + 20, 60.0f, Level.ExplosionInteraction.TNT);
+                    level.explode(owner, pos.x, pos.y, pos.z - 20, 60.0f, Level.ExplosionInteraction.TNT);
                 }
             }
         }

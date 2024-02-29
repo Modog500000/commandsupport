@@ -7,9 +7,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Material;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -42,10 +42,11 @@ public class Commandsupport {
 
         ModParticles.PARTICLE_TYPES.register(modEventBus);
         ModItems.ITEMS.register(modEventBus);
+        ModItems.registerCreativeTabs(modEventBus);
         ModSounds.SOUND_EVENTS.register(modEventBus);
         Messages.register();
 
-
+        modEventBus.addListener(this::addCreative);
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
@@ -59,7 +60,14 @@ public class Commandsupport {
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
     }
-
+    private void addCreative(BuildCreativeModeTabContentsEvent event) {
+        if (event.getTab() == ModItems.TAB.get()) {
+            event.accept(ModItems.RADIO);
+            event.accept(ModItems.MARKER_AIRSTRIKE);
+            event.accept(ModItems.MARKER_NUKE);
+            event.accept(ModItems.MARKER_SUPPLY);
+        }
+    }
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents {

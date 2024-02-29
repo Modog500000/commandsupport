@@ -1,13 +1,12 @@
 package org.modogthedev.commandsupport.custom.particles;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.LightTexture;
-import com.mojang.math.Quaternion;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.resources.sounds.TickableSoundInstance;
@@ -17,6 +16,9 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Quaterniond;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import org.modogthedev.commandsupport.Commandsupport;
 import org.modogthedev.commandsupport.core.ModSounds;
 import org.modogthedev.commandsupport.util.IRotatingParticleRenderType;
@@ -51,11 +53,15 @@ public class PlaneParticle extends TextureSheetParticle {
     }
 
 
-    public Quaternion getCustomRotation(Camera camera, float partialTicks, boolean vert) {
+    public Quaternionf getCustomRotation(Camera camera, float partialTicks, boolean vert) {
         if (vert) {
-            return Vector3f.XP.rotationDegrees(-90);
+            Quaternionf quaternion = new Quaternionf();
+            quaternion.mul(Axis.XP.rotationDegrees(-90));
+            return quaternion;
         } else {
-            return Vector3f.YN.rotationDegrees(135);
+            Quaternionf quaternion = new Quaternionf();
+            quaternion.mul(Axis.YN.rotationDegrees(135));
+            return quaternion;
         }
 
     }
@@ -75,12 +81,12 @@ public class PlaneParticle extends TextureSheetParticle {
         };
         float scale = getQuadSize(partialTicks);
 
-        Quaternion rotation = getCustomRotation(camera, partialTicks,true);
-        Quaternion rotation1 = getCustomRotation(camera, partialTicks,false);
+        Quaternionf rotation = getCustomRotation(camera, partialTicks,true);
+        Quaternionf rotation1 = getCustomRotation(camera, partialTicks,false);
         for(int i = 0; i < 4; ++i) {
             Vector3f vertex = vertices[i];
-            vertex.transform(rotation);
-            vertex.transform(rotation1);
+            vertex.rotate(rotation);
+            vertex.rotate(rotation1);
             vertex.mul(scale);
             vertex.add(originX, originY, originZ);
         }
